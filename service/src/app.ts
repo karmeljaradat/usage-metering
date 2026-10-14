@@ -4,6 +4,7 @@ import { accountRoutes } from "./routes/accounts.js";
 import { userRoutes } from "./routes/users.js";
 import { customPlanRoutes } from "./routes/plans.js";
 import { consumeRoutes } from "./routes/consume.js";
+import { usageRoutes } from "./routes/usage.js";
 
 export function buildApp() {
   const app = Fastify({ logger: true });
@@ -17,6 +18,7 @@ export function buildApp() {
   app.register(userRoutes);
   app.register(customPlanRoutes);
   app.register(consumeRoutes);
+  app.register(usageRoutes);
 
   return app;
 }
