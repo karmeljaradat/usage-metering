@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import { pool } from "./db.js";
 import { accountRoutes } from "./routes/accounts.js";
 import { userRoutes } from "./routes/users.js";
+import { customPlanRoutes } from "./routes/plans.js";
 
 export function buildApp() {
   const app = Fastify({ logger: true });
@@ -13,6 +14,7 @@ export function buildApp() {
 
   app.register(accountRoutes);
   app.register(userRoutes);
+  app.register(customPlanRoutes);
 
   return app;
 }
