@@ -44,7 +44,6 @@ export async function consumeRoutes(app: FastifyInstance) {
       try {
         await client.query("BEGIN");
 
-        // 1) قفل صف العدّاد (بننشئه إذا مش موجود) لتسلسل الطلبات المتزامنة
         await client.query(
           `INSERT INTO account_monthly_usage (account_id, month)
            VALUES ($1, $2) ON CONFLICT DO NOTHING`,
@@ -57,7 +56,6 @@ export async function consumeRoutes(app: FastifyInstance) {
         );
         const accountUsed = Number(acc.rows[0].used);
 
-        // 2) idempotency: إذا الطلب انسجّل قبل، رجّع نتيجته
         const prev = await client.query(
           `SELECT accepted, rejected_rule, rejected_level, units
            FROM usage_requests WHERE account_id = $1 AND request_id = $2`,
@@ -75,7 +73,6 @@ export async function consumeRoutes(app: FastifyInstance) {
           });
         }
 
-        // 3) المستخدم وخطته وخطة الحساب
         const u = await client.query(
           `SELECT u.id, p.monthly_allowance, p.max_units_per_request
            FROM users u JOIN plans p ON p.id = u.plan_id
@@ -115,7 +112,6 @@ export async function consumeRoutes(app: FastifyInstance) {
         );
         const userUsed = Number(uu.rows[0].used);
 
-        // 4) القواعد بالترتيب
         let rule: string | null = null;
         let level: string | null = null;
         if (units > limits.user.perRequest) {

@@ -40,7 +40,6 @@ export async function usageRoutes(app: FastifyInstance) {
     };
   });
 
-  // استهلاك مستخدم
   app.get("/usage/users/:externalId", async (req, reply) => {
     const { externalId } = req.params as { externalId: string };
     const month = parseMonth((req.query as any).month);
@@ -68,7 +67,6 @@ export async function usageRoutes(app: FastifyInstance) {
     };
   });
 
-  // السجل مع pagination: ?limit=20&offset=0&userId=user-1
   app.get("/history", async (req) => {
     const q = req.query as { limit?: string; offset?: string; userId?: string };
     const limit = Math.min(Math.max(Number(q.limit) || 20, 1), 100);

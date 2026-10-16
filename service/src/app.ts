@@ -7,7 +7,7 @@ import { consumeRoutes } from "./routes/consume.js";
 import { usageRoutes } from "./routes/usage.js";
 
 export function buildApp() {
-  const app = Fastify({ logger: true });
+  const app = Fastify({ logger: process.env.NODE_ENV !== "test" });
 
   app.get("/health", async () => {
     const result = await pool.query("SELECT now() AS now");
