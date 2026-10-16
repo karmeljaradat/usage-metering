@@ -14,5 +14,23 @@ services:
       interval: 3s
       retries: 10
 
+  service:
+    build: ./service
+    environment:
+      DATABASE_URL: postgres://metering:metering@db:5432/metering
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  client:
+    build: ./client
+    environment:
+      API_URL: http://service:3000
+    depends_on:
+      - service
+
 volumes:
   pgdata:
