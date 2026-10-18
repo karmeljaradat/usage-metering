@@ -15,14 +15,14 @@ afterAll(async () => {
 });
 
 describe("API key", () => {
-  it("بيرفض بدون مفتاح أو بمفتاح غلط", async () => {
+  it("rejects a missing or wrong key", async () => {
     const a = await app.inject({ method: "GET", url: "/account" });
     expect(a.statusCode).toBe(401);
     const b = await app.inject({ method: "GET", url: "/account", headers: { "x-api-key": "wrong" } });
     expect(b.statusCode).toBe(401);
   });
 
-  it("بيقبل مفتاح صحيح", async () => {
+  it("accepts a valid key", async () => {
     const acc = await newAccount();
     const r = await get(acc.key, "/account");
     expect(r.status).toBe(200);
@@ -30,8 +30,8 @@ describe("API key", () => {
   });
 });
 
-describe("عزل الحسابات", () => {
-  it("حساب ما بيشوف ولا بيستهلك ولا بيعدّل بيانات حساب ثاني", async () => {
+describe("account isolation", () => {
+  it("an account cannot read, consume from or modify another account's data", async () => {
     const a = await newAccount();
     const b = await newAccount();
     const userA = await newUser(a.key);
@@ -49,30 +49,30 @@ describe("عزل الحسابات", () => {
     });
     expect(edit.statusCode).toBe(404);
 
-    // السجل ما بيتسرّب
+    // history does not leak
     await consume(a.key, userA, "r1", 1);
     const hist = await get(b.key, "/history");
     expect(hist.body.items).toHaveLength(0);
   });
 });
 
-describe("حالات الرفض", () => {
-  it("per_request على المستخدم", async () => {
+describe("rejections", () => {
+  it("per_request on the user", async () => {
     const acc = await newAccount();
-    const u = await newUser(acc.key, "Basic"); // 20 لكل طلب
+    const u = await newUser(acc.key, "Basic"); // 20 per request
     const r = await consume(acc.key, u, "r1", 21);
     expect(r.status).toBe(422);
     expect(r.body).toMatchObject({ accepted: false, rejectedRule: "per_request", rejectedLevel: "user" });
   });
 
-  it("per_request على الحساب", async () => {
-    const acc = await newAccount("Starter"); // 100 لكل طلب
-    const u = await newUser(acc.key, "Premium"); // 200 لكل طلب
+  it("per_request on the account", async () => {
+    const acc = await newAccount("Starter"); // 100 per request
+    const u = await newUser(acc.key, "Premium"); // 200 per request
     const r = await consume(acc.key, u, "r1", 150);
     expect(r.body).toMatchObject({ accepted: false, rejectedRule: "per_request", rejectedLevel: "account" });
   });
 
-  it("monthly على المستخدم، والرفض ما بينحسب من الرصيد", async () => {
+  it("monthly on the user, and a rejection does not consume allowance", async () => {
     const acc = await newAccount();
     const plan = await newUserPlan(acc.key, 100, 50);
     const u = await newUserOnPlan(acc.key, plan);
@@ -86,8 +86,8 @@ describe("حالات الرفض", () => {
     expect(usage.body).toMatchObject({ allowance: 100, used: 100, remaining: 0 });
   });
 
-  it("monthly على الحساب", async () => {
-    const acc = await newAccount("Starter"); // 10000 شهرياً
+  it("monthly on the account", async () => {
+    const acc = await newAccount("Starter"); // 10000 per month
     const a = await newUser(acc.key, "Premium");
     const b = await newUser(acc.key, "Premium");
 
@@ -103,7 +103,7 @@ describe("حالات الرفض", () => {
 });
 
 describe("retry (idempotency)", () => {
-  it("نفس الـ requestId ما بينحسب مرتين", async () => {
+  it("the same requestId is not counted twice", async () => {
     const acc = await newAccount();
     const u = await newUser(acc.key, "Basic");
 
@@ -119,10 +119,28 @@ describe("retry (idempotency)", () => {
     const hist = await get(acc.key, "/history");
     expect(hist.body.items).toHaveLength(1);
   });
+
+  it("reusing a requestId with a different amount or user is a 409 and counts nothing", async () => {
+    const acc = await newAccount();
+    const u1 = await newUser(acc.key, "Basic");
+    const u2 = await newUser(acc.key, "Basic");
+
+    expect((await consume(acc.key, u1, "reused", 10)).status).toBe(200);
+
+    const otherAmount = await consume(acc.key, u1, "reused", 11);
+    expect(otherAmount.status).toBe(409);
+    expect(otherAmount.body.error).toBe("request_id_conflict");
+
+    const otherUser = await consume(acc.key, u2, "reused", 10);
+    expect(otherUser.status).toBe(409);
+
+    const usage = await get(acc.key, "/usage");
+    expect(usage.body.used).toBe(10);
+  });
 });
 
-describe("التزامن", () => {
-  it("20 طلب متزامن على رصيد 100: بالضبط 10 بينقبلوا", async () => {
+describe("concurrency", () => {
+  it("20 concurrent requests against an allowance of 100: exactly 10 are accepted", async () => {
     const acc = await newAccount();
     const plan = await newUserPlan(acc.key, 100, 10);
     const u = await newUserOnPlan(acc.key, plan);
@@ -137,7 +155,7 @@ describe("التزامن", () => {
     expect(usage.body.used).toBe(100);
   });
 
-  it("نفس الـ requestId بشكل متزامن بينحسب مرة وحدة", async () => {
+  it("the same requestId sent concurrently is counted once", async () => {
     const acc = await newAccount();
     const u = await newUser(acc.key, "Basic");
 
@@ -151,8 +169,8 @@ describe("التزامن", () => {
   });
 });
 
-describe("History", () => {
-  it("pagination وفلتر المستخدم", async () => {
+describe("history and usage queries", () => {
+  it("pagination and user filter", async () => {
     const acc = await newAccount();
     const u = await newUser(acc.key, "Basic");
     for (let i = 0; i < 5; i++) await consume(acc.key, u, `h${i}`, 1);
@@ -161,17 +179,37 @@ describe("History", () => {
     const page2 = await get(acc.key, "/history?limit=2&offset=2");
     expect(page1.body.items).toHaveLength(2);
     expect(page2.body.items).toHaveLength(2);
-    expect(page1.body.items[0].request_id).toBe("h4"); 
+    expect(page1.body.items[0].request_id).toBe("h4");
     expect(page2.body.items[0].request_id).toBe("h2");
 
     const filtered = await get(acc.key, `/history?userId=${u}`);
     expect(filtered.body.items).toHaveLength(5);
   });
+
+  it("month filter on history and usage; invalid month is a 400", async () => {
+    const acc = await newAccount();
+    const u = await newUser(acc.key, "Basic");
+    await consume(acc.key, u, "m1", 3);
+
+    const current = new Date().toISOString().slice(0, 7);
+    expect((await get(acc.key, `/history?month=${current}`)).body.items).toHaveLength(1);
+    expect((await get(acc.key, "/history?month=2020-01")).body.items).toHaveLength(0);
+
+    const oldUsage = await get(acc.key, "/usage?month=2020-01");
+    expect(oldUsage.status).toBe(200);
+    expect(oldUsage.body.used).toBe(0);
+
+    expect((await get(acc.key, "/usage?month=abc")).status).toBe(400);
+    expect((await get(acc.key, "/usage?month=2026-13")).status).toBe(400);
+    expect((await get(acc.key, `/usage/users/${u}?month=nope`)).status).toBe(400);
+    expect((await get(acc.key, "/history?month=nope")).status).toBe(400);
+  });
 });
-describe("تغيير الخطط", () => {
-  it("تغيير خطة الحساب بيغيّر الحدود للطلبات الجاية", async () => {
-    const acc = await newAccount("Starter"); 
-    const u = await newUser(acc.key, "Premium"); 
+
+describe("plan changes", () => {
+  it("switching the account plan changes the limits for upcoming requests", async () => {
+    const acc = await newAccount("Starter");
+    const u = await newUser(acc.key, "Premium");
 
     const before = await consume(acc.key, u, "r1", 150);
     expect(before.body).toMatchObject({ rejectedRule: "per_request", rejectedLevel: "account" });
@@ -196,7 +234,7 @@ describe("تغيير الخطط", () => {
     expect(after.body.accepted).toBe(true);
   });
 
-  it("ما بتقدر تعيّن خطة حساب ثاني أو خطة مستخدم على الحساب", async () => {
+  it("cannot assign another account's plan, or a user plan to the account", async () => {
     const a = await newAccount();
     const b = await newAccount();
 
@@ -224,7 +262,7 @@ describe("تغيير الخطط", () => {
     expect(r2.statusCode).toBe(400);
   });
 
-  it("تخفيض الحد تحت الاستهلاك: المتبقي صفر والطلبات بتنرفض", async () => {
+  it("lowering the allowance below usage: remaining is zero and requests are rejected", async () => {
     const acc = await newAccount();
     const plan = await newUserPlan(acc.key, 100, 50);
     const u = await newUserOnPlan(acc.key, plan);

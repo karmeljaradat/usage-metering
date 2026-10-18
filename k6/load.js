@@ -1,18 +1,21 @@
 ﻿import http from "k6/http";
 import { check } from "k6";
 
+// Configurable from the command line, e.g. -e ACCOUNTS=1 -e RATE=200
 const BASE = __ENV.API_URL || "http://service:3000";
 const JSON_H = { "content-type": "application/json" };
-const ACCOUNTS = 20;
-const USERS_PER_ACCOUNT = 5;
+const ACCOUNTS = Number(__ENV.ACCOUNTS || 20);
+const USERS_PER_ACCOUNT = Number(__ENV.USERS_PER_ACCOUNT || 5);
+const RATE = Number(__ENV.RATE || 200);
+const DURATION = __ENV.DURATION || "30s";
 
 export const options = {
   scenarios: {
     load: {
       executor: "constant-arrival-rate",
-      rate: 200,
+      rate: RATE,
       timeUnit: "1s",
-      duration: "30s",
+      duration: DURATION,
       preAllocatedVUs: 50,
       maxVUs: 200,
     },
@@ -68,6 +71,8 @@ export default function (data) {
   check(res, { "status is 200 or 422": (r) => r.status === 200 || r.status === 422 });
 }
 
+// Correctness check after the run: total counted units must equal
+// accepted requests x 5, and no account may exceed its allowance.
 export function teardown(data) {
   let total = 0;
   let overLimit = 0;

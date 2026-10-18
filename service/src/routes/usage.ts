@@ -8,17 +8,19 @@ function monthStart(d = new Date()) {
     .slice(0, 10);
 }
 
-function parseMonth(q: unknown) {
-  if (typeof q === "string" && /^\d{4}-\d{2}$/.test(q)) return q + "-01";
-  return monthStart();
+function parseMonth(q: unknown): string | null {
+  if (q === undefined || q === "") return monthStart();
+  if (typeof q === "string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(q)) return q + "-01";
+  return null;
 }
 
 export async function usageRoutes(app: FastifyInstance) {
   app.addHook("preHandler", requireAccount);
 
-  // استهلاك الحساب: المستهلك والمتبقي لشهر معيّن (?month=2026-10)
-  app.get("/usage", async (req) => {
+  app.get("/usage", async (req, reply) => {
     const month = parseMonth((req.query as any).month);
+    if (!month) return reply.code(400).send({ error: "invalid_month" });
+
     const result = await pool.query(
       `SELECT p.monthly_allowance,
               COALESCE(m.used, 0) AS used
@@ -43,6 +45,8 @@ export async function usageRoutes(app: FastifyInstance) {
   app.get("/usage/users/:externalId", async (req, reply) => {
     const { externalId } = req.params as { externalId: string };
     const month = parseMonth((req.query as any).month);
+    if (!month) return reply.code(400).send({ error: "invalid_month" });
+
     const result = await pool.query(
       `SELECT p.monthly_allowance,
               COALESCE(m.used, 0) AS used
@@ -67,8 +71,13 @@ export async function usageRoutes(app: FastifyInstance) {
     };
   });
 
-  app.get("/history", async (req) => {
-    const q = req.query as { limit?: string; offset?: string; userId?: string };
+  app.get("/history", async (req, reply) => {
+    const q = req.query as {
+      limit?: string;
+      offset?: string;
+      userId?: string;
+      month?: string;
+    };
     const limit = Math.min(Math.max(Number(q.limit) || 20, 1), 100);
     const offset = Math.max(Number(q.offset) || 0, 0);
 
@@ -77,6 +86,12 @@ export async function usageRoutes(app: FastifyInstance) {
     if (q.userId) {
       params.push(q.userId);
       where += ` AND u.external_id = $${params.length}`;
+    }
+    if (q.month !== undefined && q.month !== "") {
+      const month = parseMonth(q.month);
+      if (!month) return reply.code(400).send({ error: "invalid_month" });
+      params.push(month);
+      where += ` AND r.month = $${params.length}`;
     }
     params.push(limit, offset);
 

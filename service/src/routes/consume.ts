@@ -57,13 +57,18 @@ export async function consumeRoutes(app: FastifyInstance) {
         const accountUsed = Number(acc.rows[0].used);
 
         const prev = await client.query(
-          `SELECT accepted, rejected_rule, rejected_level, units
-           FROM usage_requests WHERE account_id = $1 AND request_id = $2`,
+          `SELECT r.accepted, r.rejected_rule, r.rejected_level, r.units,
+                  u.external_id
+           FROM usage_requests r JOIN users u ON u.id = r.user_id
+           WHERE r.account_id = $1 AND r.request_id = $2`,
           [accountId, requestId],
         );
         if (prev.rowCount) {
           await client.query("COMMIT");
           const p = prev.rows[0];
+          if (p.external_id !== userId || Number(p.units) !== units) {
+            return reply.code(409).send({ error: "request_id_conflict" });
+          }
           return reply.code(p.accepted ? 200 : 422).send({
             accepted: p.accepted,
             units: Number(p.units),
@@ -83,10 +88,12 @@ export async function consumeRoutes(app: FastifyInstance) {
           await client.query("ROLLBACK");
           return reply.code(404).send({ error: "user_not_found" });
         }
+
         const ap = await client.query(
-          `SELECT monthly_allowance, max_units_per_request
-           FROM plans WHERE id = $1`,
-          [req.account!.planId],
+          `SELECT p.monthly_allowance, p.max_units_per_request
+           FROM accounts a JOIN plans p ON p.id = a.plan_id
+           WHERE a.id = $1`,
+          [accountId],
         );
 
         const limits: Limits = {

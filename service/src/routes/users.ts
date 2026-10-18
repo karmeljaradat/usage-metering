@@ -5,7 +5,6 @@ import { requireAccount } from "../auth.js";
 export async function userRoutes(app: FastifyInstance) {
   app.addHook("preHandler", requireAccount);
 
-  // تسجيل مستخدم تحت الحساب (بخطة user جاهزة أو custom تابعة لنفس الحساب)
   app.post(
     "/users",
     {
@@ -54,7 +53,6 @@ export async function userRoutes(app: FastifyInstance) {
     },
   );
 
-  // عرض مستخدم
   app.get("/users/:externalId", async (req, reply) => {
     const { externalId } = req.params as { externalId: string };
     const result = await pool.query(
@@ -71,7 +69,6 @@ export async function userRoutes(app: FastifyInstance) {
     return result.rows[0];
   });
 
-  // تغيير خطة مستخدم
   app.put(
     "/users/:externalId/plan",
     {

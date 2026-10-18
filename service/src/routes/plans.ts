@@ -16,7 +16,6 @@ const planBody = {
 export async function customPlanRoutes(app: FastifyInstance) {
   app.addHook("preHandler", requireAccount);
 
-  // إنشاء خطة custom تابعة للحساب
   app.post("/custom-plans", { schema: { body: planBody } }, async (req, reply) => {
     const b = req.body as {
       scope: "account" | "user";
@@ -40,7 +39,6 @@ export async function customPlanRoutes(app: FastifyInstance) {
     }
   });
 
-  // عرض خطط الحساب الـ custom
   app.get("/custom-plans", async (req) => {
     const result = await pool.query(
       `SELECT id, scope, name, monthly_allowance, max_units_per_request
@@ -50,7 +48,6 @@ export async function customPlanRoutes(app: FastifyInstance) {
     return result.rows;
   });
 
-  // تعديل خطة custom (بس خطط الحساب نفسه)
   app.put(
     "/custom-plans/:id",
     {
