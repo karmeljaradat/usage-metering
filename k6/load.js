@@ -1,8 +1,10 @@
-import http from "k6/http";
+﻿import http from "k6/http";
 import { check } from "k6";
 
 const BASE = __ENV.API_URL || "http://service:3000";
 const JSON_H = { "content-type": "application/json" };
+const ACCOUNTS = 20;
+const USERS_PER_ACCOUNT = 5;
 
 export const options = {
   scenarios: {
@@ -24,31 +26,36 @@ export const options = {
 export function setup() {
   const plans = http.get(`${BASE}/plans`).json();
   const id = (n) => plans.find((p) => p.name === n).id;
+  const run = Date.now();
 
-  const acc = http
-    .post(
-      `${BASE}/accounts`,
-      JSON.stringify({ name: "k6-" + Date.now(), planId: id("Pro") }),
-      { headers: JSON_H },
-    )
-    .json();
-  const headers = { ...JSON_H, "x-api-key": acc.apiKey };
-
-  const users = [];
-  for (let i = 0; i < 20; i++) {
-    const externalId = "k6-user-" + i;
-    http.post(
-      `${BASE}/users`,
-      JSON.stringify({ externalId, planId: id("Premium") }),
-      { headers },
-    );
-    users.push(externalId);
+  const accounts = [];
+  for (let a = 0; a < ACCOUNTS; a++) {
+    const acc = http
+      .post(
+        `${BASE}/accounts`,
+        JSON.stringify({ name: `k6-${run}-${a}`, planId: id("Pro") }),
+        { headers: JSON_H },
+      )
+      .json();
+    const headers = { ...JSON_H, "x-api-key": acc.apiKey };
+    const users = [];
+    for (let i = 0; i < USERS_PER_ACCOUNT; i++) {
+      const externalId = `u-${i}`;
+      http.post(
+        `${BASE}/users`,
+        JSON.stringify({ externalId, planId: id("Premium") }),
+        { headers },
+      );
+      users.push(externalId);
+    }
+    accounts.push({ headers, users });
   }
-  return { headers, users };
+  return { accounts };
 }
 
 export default function (data) {
-  const user = data.users[Math.floor(Math.random() * data.users.length)];
+  const acc = data.accounts[Math.floor(Math.random() * data.accounts.length)];
+  const user = acc.users[Math.floor(Math.random() * acc.users.length)];
   const res = http.post(
     `${BASE}/consume`,
     JSON.stringify({
@@ -56,12 +63,18 @@ export default function (data) {
       requestId: `${__VU}-${__ITER}-${Date.now()}`,
       units: 5,
     }),
-    { headers: data.headers },
+    { headers: acc.headers },
   );
   check(res, { "status is 200 or 422": (r) => r.status === 200 || r.status === 422 });
 }
 
 export function teardown(data) {
-  const u = http.get(`${BASE}/usage`, { headers: data.headers }).json();
-  console.log(`FINAL account usage: ${JSON.stringify(u)}`);
+  let total = 0;
+  let overLimit = 0;
+  for (const acc of data.accounts) {
+    const u = http.get(`${BASE}/usage`, { headers: acc.headers }).json();
+    total += u.used;
+    if (u.used > u.allowance) overLimit++;
+  }
+  console.log(`FINAL total units consumed: ${total}, accounts over limit: ${overLimit}`);
 }
