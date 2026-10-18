@@ -3,7 +3,6 @@ import { pool } from "../db.js";
 import { generateApiKey, hashKey, requireAccount } from "../auth.js";
 
 export async function accountRoutes(app: FastifyInstance) {
-  // الخطط الجاهزة (predefined)
   app.get("/plans", async () => {
     const result = await pool.query(
       `SELECT id, scope, name, monthly_allowance, max_units_per_request
@@ -12,7 +11,6 @@ export async function accountRoutes(app: FastifyInstance) {
     return result.rows;
   });
 
-  // إنشاء حساب وإصدار API key (بيظهر مرة وحدة بس)
   app.post(
     "/accounts",
     {
@@ -49,7 +47,6 @@ export async function accountRoutes(app: FastifyInstance) {
     },
   );
 
-  // معلومات الحساب الحالي (محمي بالـ API key)
   app.get("/account", { preHandler: requireAccount }, async (req) => {
     const result = await pool.query(
       `SELECT a.id, a.name, a.created_at,
@@ -61,4 +58,38 @@ export async function accountRoutes(app: FastifyInstance) {
     );
     return result.rows[0];
   });
+
+  app.put(
+    "/account/plan",
+    {
+      preHandler: requireAccount,
+      schema: {
+        body: {
+          type: "object",
+          required: ["planId"],
+          properties: { planId: { type: "string", format: "uuid" } },
+        },
+      },
+    },
+    async (req, reply) => {
+      const { planId } = req.body as { planId: string };
+      const accountId = req.account!.id;
+
+      const plan = await pool.query(
+        `SELECT id FROM plans
+         WHERE id = $1 AND scope = 'account'
+           AND (account_id IS NULL OR account_id = $2)`,
+        [planId, accountId],
+      );
+      if (!plan.rowCount) {
+        return reply.code(400).send({ error: "invalid_plan" });
+      }
+
+      await pool.query("UPDATE accounts SET plan_id = $1 WHERE id = $2", [
+        planId,
+        accountId,
+      ]);
+      return { id: accountId, plan_id: planId };
+    },
+  );
 }

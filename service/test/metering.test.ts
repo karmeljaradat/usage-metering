@@ -161,10 +161,93 @@ describe("History", () => {
     const page2 = await get(acc.key, "/history?limit=2&offset=2");
     expect(page1.body.items).toHaveLength(2);
     expect(page2.body.items).toHaveLength(2);
-    expect(page1.body.items[0].request_id).toBe("h4"); // الأحدث أول
+    expect(page1.body.items[0].request_id).toBe("h4"); 
     expect(page2.body.items[0].request_id).toBe("h2");
 
     const filtered = await get(acc.key, `/history?userId=${u}`);
     expect(filtered.body.items).toHaveLength(5);
+  });
+});
+describe("تغيير الخطط", () => {
+  it("تغيير خطة الحساب بيغيّر الحدود للطلبات الجاية", async () => {
+    const acc = await newAccount("Starter"); 
+    const u = await newUser(acc.key, "Premium"); 
+
+    const before = await consume(acc.key, u, "r1", 150);
+    expect(before.body).toMatchObject({ rejectedRule: "per_request", rejectedLevel: "account" });
+
+    const created = await app.inject({
+      method: "POST",
+      url: "/custom-plans",
+      headers: { "x-api-key": acc.key },
+      payload: { scope: "account", name: "Big", monthlyAllowance: 10000, maxUnitsPerRequest: 500 },
+    });
+    const planId = created.json().id;
+
+    const sw = await app.inject({
+      method: "PUT",
+      url: "/account/plan",
+      headers: { "x-api-key": acc.key },
+      payload: { planId },
+    });
+    expect(sw.statusCode).toBe(200);
+
+    const after = await consume(acc.key, u, "r2", 150);
+    expect(after.body.accepted).toBe(true);
+  });
+
+  it("ما بتقدر تعيّن خطة حساب ثاني أو خطة مستخدم على الحساب", async () => {
+    const a = await newAccount();
+    const b = await newAccount();
+
+    const planB = await app.inject({
+      method: "POST",
+      url: "/custom-plans",
+      headers: { "x-api-key": b.key },
+      payload: { scope: "account", name: "Secret", monthlyAllowance: 999999, maxUnitsPerRequest: 9999 },
+    });
+    const r1 = await app.inject({
+      method: "PUT",
+      url: "/account/plan",
+      headers: { "x-api-key": a.key },
+      payload: { planId: planB.json().id },
+    });
+    expect(r1.statusCode).toBe(400);
+
+    const userPlan = await newUserPlan(a.key, 100, 10);
+    const r2 = await app.inject({
+      method: "PUT",
+      url: "/account/plan",
+      headers: { "x-api-key": a.key },
+      payload: { planId: userPlan },
+    });
+    expect(r2.statusCode).toBe(400);
+  });
+
+  it("تخفيض الحد تحت الاستهلاك: المتبقي صفر والطلبات بتنرفض", async () => {
+    const acc = await newAccount();
+    const plan = await newUserPlan(acc.key, 100, 50);
+    const u = await newUserOnPlan(acc.key, plan);
+
+    expect((await consume(acc.key, u, "r1", 50)).body.accepted).toBe(true);
+    expect((await consume(acc.key, u, "r2", 30)).body.accepted).toBe(true); // used = 80
+
+    const edit = await app.inject({
+      method: "PUT",
+      url: `/custom-plans/${plan}`,
+      headers: { "x-api-key": acc.key },
+      payload: { monthlyAllowance: 50 },
+    });
+    expect(edit.statusCode).toBe(200);
+
+    const usage = await get(acc.key, `/usage/users/${u}`);
+    expect(usage.body).toMatchObject({ allowance: 50, used: 80, remaining: 0 });
+
+    const r = await consume(acc.key, u, "r3", 1);
+    expect(r.body).toMatchObject({ accepted: false, rejectedRule: "monthly", rejectedLevel: "user" });
+
+    const hist = await get(acc.key, "/history?limit=10");
+    const old = hist.body.items.find((i: any) => i.request_id === "r1");
+    expect(old.applied_limits.user.monthly).toBe(100);
   });
 });
