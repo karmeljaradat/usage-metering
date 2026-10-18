@@ -19,6 +19,7 @@ services:
     environment:
       DATABASE_URL: postgres://metering:metering@db:5432/metering
       PORT: "3000"
+      LOG: ${LOG:-on}
     ports:
       - "3000:3000"
     depends_on:
