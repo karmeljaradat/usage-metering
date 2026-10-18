@@ -16,6 +16,7 @@ services:
 
   service:
     build: ./service
+    restart: on-failure
     environment:
       DATABASE_URL: postgres://metering:metering@db:5432/metering
       PORT: "3000"
