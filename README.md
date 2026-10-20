@@ -25,6 +25,7 @@ What the demo shows (read the output top to bottom):
 | 14-15 | Plan updated through the API, request accepted, no client change and no redeploy |
 | 16 | Another account cannot read this account's user |
 
+For clean demo output (no service logs): `LOG=off docker compose up --build`
 ## Tests
 
 Needs the database running:
