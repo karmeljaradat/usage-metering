@@ -14,17 +14,146 @@
               * load: 200.00 iterations/s for 30s (maxVUs: 50-200, gracefulStop: 30s)
 
 
-running (0m01.0s), 002/050 VUs, 30 complete and 0 interrupted iterations
-load   [   1% ] 002/050 VUs  00.2s/30s  200.00 iters/s
+running (0m01.0s), 052/052 VUs, 11 complete and 0 interrupted iterations
+load   [   1% ] 052/052 VUs  00.3s/30s  200.00 iters/s
 
-running (0m02.0s), 002/050 VUs, 230 complete and 0 interrupted iterations
-load   [   4% ] 002/050 VUs  01.2s/30s  200.00 iters/s
+running (0m02.0s), 056/075 VUs, 174 complete and 0 interrupted iterations
+load   [   4% ] 056/075 VUs  01.3s/30s  200.00 iters/s
 
-running (0m03.0s), 001/050 VUs, 430 complete and 0 interrupted iterations
-load   [   7% ] 001/050 VUs  02.2s/30s  200.00 iters/s
+running (0m03.0s), 062/075 VUs, 368 complete and 0 interrupted iterations
+load   [   8% ] 062/075 VUs  02.3s/30s  200.00 iters/s
 
-running (0m04.0s), 002/050 VUs, 630 complete and 0 interrupted iterations
-load   [  11% ] 002/050 VUs  03.2s/30s  200.00 iters/s
+running (0m04.0s), 044/075 VUs, 585 complete and 0 interrupted iterations
+load   [  11% ] 044/075 VUs  03.3s/30s  200.00 iters/s
 
-running (0m05.0s), 001/050 VUs, 830 complete and 0 interrupted iterations
-load   [  14% ] 001/050 VUs  04.2s/30s  200.00 iters/s
+running (0m05.0s), 003/075 VUs, 827 complete and 0 interrupted iterations
+load   [  14% ] 003/075 VUs  04.3s/30s  200.00 iters/s
+
+running (0m06.0s), 008/075 VUs, 1022 complete and 0 interrupted iterations
+load   [  18% ] 008/075 VUs  05.3s/30s  200.00 iters/s
+
+running (0m07.0s), 002/075 VUs, 1228 complete and 0 interrupted iterations
+load   [  21% ] 002/075 VUs  06.3s/30s  200.00 iters/s
+
+running (0m08.0s), 003/075 VUs, 1427 complete and 0 interrupted iterations
+load   [  24% ] 003/075 VUs  07.3s/30s  200.00 iters/s
+
+running (0m09.0s), 002/075 VUs, 1628 complete and 0 interrupted iterations
+load   [  28% ] 002/075 VUs  08.3s/30s  200.00 iters/s
+
+running (0m10.0s), 005/075 VUs, 1823 complete and 0 interrupted iterations
+load   [  31% ] 005/075 VUs  09.3s/30s  200.00 iters/s
+
+running (0m11.0s), 060/087 VUs, 1954 complete and 0 interrupted iterations
+load   [  34% ] 060/087 VUs  10.3s/30s  200.00 iters/s
+
+running (0m12.0s), 038/087 VUs, 2175 complete and 0 interrupted iterations
+load   [  38% ] 038/087 VUs  11.3s/30s  200.00 iters/s
+
+running (0m13.0s), 024/087 VUs, 2390 complete and 0 interrupted iterations
+load   [  41% ] 024/087 VUs  12.3s/30s  200.00 iters/s
+
+running (0m14.0s), 034/087 VUs, 2580 complete and 0 interrupted iterations
+load   [  44% ] 034/087 VUs  13.3s/30s  200.00 iters/s
+
+running (0m15.0s), 002/087 VUs, 2812 complete and 0 interrupted iterations
+load   [  48% ] 002/087 VUs  14.3s/30s  200.00 iters/s
+
+running (0m16.0s), 004/087 VUs, 3010 complete and 0 interrupted iterations
+load   [  51% ] 004/087 VUs  15.3s/30s  200.00 iters/s
+
+running (0m17.0s), 044/087 VUs, 3170 complete and 0 interrupted iterations
+load   [  54% ] 044/087 VUs  16.3s/30s  200.00 iters/s
+
+running (0m18.0s), 111/113 VUs, 3264 complete and 0 interrupted iterations
+load   [  58% ] 111/113 VUs  17.3s/30s  200.00 iters/s
+
+running (0m19.0s), 111/127 VUs, 3443 complete and 0 interrupted iterations
+load   [  61% ] 111/127 VUs  18.3s/30s  200.00 iters/s
+
+running (0m20.0s), 168/168 VUs, 3526 complete and 0 interrupted iterations
+load   [  64% ] 168/168 VUs  19.3s/30s  200.00 iters/s
+docker : time="2026-10-20T05:06:04Z" level=warning msg="Insufficient VUs, reached 200 active VUs and 
+cannot initialize more" executor=constant-arrival-rate scenario=load
+At line:3 char:1
++ docker run --rm -i --network usage-metering_default -v ${PWD}/k6:/scr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (time="2026-10-2...e scenario=load:String) [], RemoteExcept 
+   ion
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+running (0m21.0s), 197/200 VUs, 3628 complete and 0 interrupted iterations
+load   [  68% ] 197/200 VUs  20.3s/30s  200.00 iters/s
+
+running (0m22.0s), 161/200 VUs, 3848 complete and 0 interrupted iterations
+load   [  71% ] 161/200 VUs  21.3s/30s  200.00 iters/s
+
+running (0m23.0s), 145/200 VUs, 4062 complete and 0 interrupted iterations
+load   [  74% ] 145/200 VUs  22.3s/30s  200.00 iters/s
+
+running (0m24.0s), 092/200 VUs, 4317 complete and 0 interrupted iterations
+load   [  78% ] 091/200 VUs  23.3s/30s  200.00 iters/s
+
+running (0m25.0s), 074/200 VUs, 4535 complete and 0 interrupted iterations
+load   [  81% ] 074/200 VUs  24.4s/30s  200.00 iters/s
+
+running (0m26.0s), 138/200 VUs, 4671 complete and 0 interrupted iterations
+load   [  84% ] 138/200 VUs  25.3s/30s  200.00 iters/s
+
+running (0m27.0s), 104/200 VUs, 4905 complete and 0 interrupted iterations
+load   [  88% ] 104/200 VUs  26.3s/30s  200.00 iters/s
+
+running (0m28.0s), 094/200 VUs, 5115 complete and 0 interrupted iterations
+load   [  91% ] 094/200 VUs  27.3s/30s  200.00 iters/s
+
+running (0m29.0s), 107/200 VUs, 5301 complete and 0 interrupted iterations
+load   [  94% ] 107/200 VUs  28.3s/30s  200.00 iters/s
+
+running (0m30.0s), 021/200 VUs, 5587 complete and 0 interrupted iterations
+load   [  98% ] 021/200 VUs  29.3s/30s  200.00 iters/s
+time="2026-10-20T05:06:14Z" level=info msg="FINAL total units consumed: 28720, accounts over limit: 0" 
+source=console
+
+
+  ظûê THRESHOLDS 
+
+    http_req_duration
+    ظ£ù 'p(95)<500' p(95)=1.05s
+
+    http_req_failed
+    ظ£ô 'rate<0.01' rate=0.00%
+
+
+  ظûê TOTAL RESULTS 
+
+    checks_total.......: 5744    186.713176/s
+    checks_succeeded...: 100.00% 5744 out of 5744
+    checks_failed......: 0.00%   0 out of 5744
+
+    ظ£ô status is 200 or 422
+
+    HTTP
+    http_req_duration..............: avg=326.33ms min=1.91ms med=223.06ms max=1.86s p(90)=766.17ms p(95)=1.05s
+      { expected_response:true }...: avg=326.33ms min=1.91ms med=223.06ms max=1.86s p(90)=766.17ms p(95)=1.05s
+    http_req_failed................: 0.00%  0 out of 5885
+    http_reqs......................: 5885   191.29649/s
+
+    EXECUTION
+    dropped_iterations.............: 257    8.353984/s
+    iteration_duration.............: avg=335.12ms min=6.63ms med=236.57ms max=1.86s p(90)=775.56ms p(95)=1.07s
+    iterations.....................: 5744   186.713176/s
+    vus............................: 21     min=2         max=197
+    vus_max........................: 200    min=52        max=200
+
+    NETWORK
+    data_received..................: 1.5 MB 50 kB/s
+    data_sent......................: 1.5 MB 48 kB/s
+
+
+
+
+running (0m30.8s), 000/200 VUs, 5744 complete and 0 interrupted iterations
+load ظ£ô [ 100% ] 000/200 VUs  30s  200.00 iters/s
+time="2026-10-20T05:06:14Z" level=error msg="thresholds on metrics 'http_req_duration' have been 
+crossed"
