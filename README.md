@@ -25,7 +25,8 @@ What the demo shows (read the output top to bottom):
 | 14-15 | Plan updated through the API, request accepted, no client change and no redeploy |
 | 16 | Another account cannot read this account's user |
 
-For clean demo output (no service logs): `LOG=off docker compose up --build`
+For clean demo output (no service logs): `LOG=off docker compose up --build` (PowerShell: `$env:LOG="off"; docker compose up --build`)
+
 ## Tests
 
 Needs the database running:
@@ -149,12 +150,14 @@ docker run --rm -i --network usage-metering_default -v "$(pwd)/k6:/scripts" \
 
 (PowerShell: replace `$(pwd)` with `${PWD}`. Other knobs: `RATE`, `DURATION`, `USERS_PER_ACCOUNT`, `API_URL`.) Raw console output from the runs is in `k6/`.
 
-| Scenario | Throughput | p95 | Failures |
-|---|---|---|---|
-| 1 account (worst case, one lock) | about 87 to 120 req/s | 2.2 to 3.1 s | 0% |
-| 20 accounts (realistic) | 196 req/s | 160 ms | 0% |
+| Scenario | Consume throughput | p95 | Dropped iterations | Failures |
+|---|---|---|---|---|
+| 1 account (worst case, one lock) | 109 req/s | 2.24 s (threshold missed) | 2546 of about 6000 | 0% |
+| 20 accounts (realistic) | 183 req/s | 390 ms | 143 of about 6000 | 0% |
 
-Correctness under load: in the 20-account run, total units consumed was 29935 = 5987 requests x 5 units, i.e. every request was counted exactly once and no account went over its limit.
+An earlier run of the 20-account scenario gave 196 req/s and p95 160 ms, so p95 varies between runs on this laptop (k6, the service and Postgres share the same machine).
+
+Correctness under load: in the 20-account run, total units consumed was 29420 = 5884 accepted requests x 5 units; in the single-account run it was 17275 = 3455 x 5. Every request was counted exactly once and no account went over its limit.
 
 What I learned: all requests for one account queue on the same row lock, which is the deliberate price of never exceeding a limit. Throughput per account is therefore bounded by how long the critical section is, while different accounts proceed in parallel. The single-account run misses the p95 < 500 ms threshold; this is reported as measured, not tuned away.
 

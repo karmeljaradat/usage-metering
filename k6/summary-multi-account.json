@@ -1,122 +1,137 @@
 {
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "status is 200 or 422": {
+                    "fails": 0,
+                    "name": "status is 200 or 422",
+                    "path": "::status is 200 or 422",
+                    "id": "c2b72604d9c2e01f688d8eb39d7d1dfe",
+                    "passes": 5884
+                }
+            }
+    },
     "metrics": {
-        "http_req_connecting": {
-            "p(90)": 0,
-            "p(95)": 0,
-            "avg": 0.17127748479184365,
-            "min": 0,
-            "med": 0,
-            "max": 100.551123
+        "http_req_blocked": {
+            "avg": 0.15579887867219872,
+            "min": 0.003801,
+            "med": 0.007801,
+            "max": 145.298279,
+            "p(90)": 0.011202,
+            "p(95)": 0.0245074
         },
-        "data_sent": {
-            "count": 1479529,
-            "rate": 48093.237899243584
+        "http_reqs": {
+            "count": 6025,
+            "rate": 187.34527059845612
         },
-        "http_req_waiting": {
-            "p(95)": 1057.5073642000002,
-            "avg": 326.01115954188634,
-            "min": 1.763757,
-            "med": 222.883505,
-            "max": 1867.892559,
-            "p(90)": 764.9960154000001
-        },
-        "http_req_duration{expected_response:true}": {
-            "avg": 326.3374364552254,
-            "min": 1.916888,
-            "med": 223.06994,
-            "max": 1868.114303,
-            "p(90)": 766.1747906000004,
-            "p(95)": 1057.6179664000001
-        },
-        "http_req_sending": {
-            "p(95)": 0.21888320000000078,
-            "avg": 0.10354327952421429,
-            "min": 0.012002,
-            "med": 0.045609,
-            "max": 31.464065,
-            "p(90)": 0.10062
+        "checks": {
+            "passes": 5884,
+            "fails": 0,
+            "value": 1
         },
         "iterations": {
-            "count": 5744,
-            "rate": 186.713175945355
+            "count": 5884,
+            "rate": 182.96092484669143
         },
         "http_req_failed": {
-            "fails": 5885,
             "passes": 0,
+            "fails": 6025,
             "thresholds": {
                 "rate<0.01": false
             },
             "value": 0
         },
-        "http_req_duration": {
-            "min": 1.916888,
-            "med": 223.06994,
-            "max": 1868.114303,
-            "p(90)": 766.1747906000004,
-            "p(95)": 1057.6179664000001,
-            "avg": 326.3374364552254,
-            "thresholds": {
-                "p(95)<500": true
-            }
-        },
-        "http_req_tls_handshaking": {
-            "max": 0,
-            "p(90)": 0,
-            "p(95)": 0,
-            "avg": 0,
-            "min": 0,
-            "med": 0
+        "http_req_waiting": {
+            "p(95)": 390.11817220000023,
+            "avg": 64.39598854074706,
+            "min": 2.181717,
+            "med": 8.840104,
+            "max": 1558.441347,
+            "p(90)": 101.81887120000026
         },
         "vus_max": {
-            "value": 200,
-            "min": 52,
-            "max": 200
-        },
-        "http_reqs": {
-            "count": 5885,
-            "rate": 191.29649032702198
-        },
-        "dropped_iterations": {
-            "count": 257,
-            "rate": 8.353984369421351
-        },
-        "data_received": {
-            "count": 1522855,
-            "rate": 49501.58313966985
-        },
-        "checks": {
-            "passes": 5744,
-            "fails": 0,
-            "value": 1
-        },
-        "http_req_blocked": {
-            "avg": 0.19702881682243162,
-            "min": 0.0032,
-            "med": 0.008301,
-            "max": 101.03612,
-            "p(90)": 0.013103,
-            "p(95)": 0.0485890000000002
+            "value": 135,
+            "min": 50,
+            "max": 135
         },
         "vus": {
-            "max": 197,
-            "value": 21,
-            "min": 2
+            "value": 19,
+            "min": 1,
+            "max": 111
         },
         "http_req_receiving": {
-            "med": 0.110222,
-            "max": 21.609576,
-            "p(90)": 0.32650420000000013,
-            "p(95)": 0.5933942000000001,
-            "avg": 0.22273363381478314,
-            "min": 0.020704
+            "med": 0.119927,
+            "max": 27.74411,
+            "p(90)": 0.18408400000000005,
+            "p(95)": 0.2682292000000002,
+            "avg": 0.1704367790871364,
+            "min": 0.018204
         },
         "iteration_duration": {
-            "p(90)": 775.5694388999999,
-            "p(95)": 1071.6875984999995,
-            "avg": 335.1221944094715,
-            "min": 6.638784,
-            "med": 236.5788645,
-            "max": 1868.468073
+            "avg": 66.62490443422818,
+            "min": 6.026668,
+            "med": 9.449291500000001,
+            "max": 1558.839502,
+            "p(90)": 112.79898779999958,
+            "p(95)": 410.7967924499975
+        },
+        "dropped_iterations": {
+            "count": 143,
+            "rate": 4.44653505320817
+        },
+        "data_received": {
+            "count": 1558835,
+            "rate": 48471.42985781649
+        },
+        "http_req_duration": {
+            "max": 1558.577032,
+            "p(90)": 101.94399920000028,
+            "p(95)": 390.18001300000026,
+            "avg": 64.63587342439841,
+            "min": 2.378834,
+            "med": 9.032851,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "http_req_sending": {
+            "avg": 0.0694481045643155,
+            "min": 0.011698,
+            "med": 0.056713,
+            "max": 13.08774,
+            "p(90)": 0.08036700000000002,
+            "p(95)": 0.10430600000000001
+        },
+        "data_sent": {
+            "count": 1515116,
+            "rate": 47112.00282291294
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 64.63587342439841,
+            "min": 2.378834,
+            "med": 9.032851,
+            "max": 1558.577032,
+            "p(90)": 101.94399920000028,
+            "p(95)": 390.18001300000026
+        },
+        "http_req_connecting": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.1325011621576763,
+            "min": 0,
+            "med": 0,
+            "max": 145.124533
         }
     },
     "setup_data": {
@@ -124,7 +139,7 @@
             {
                 "headers": {
                     "content-type": "application/json",
-                    "x-api-key": "um_b5cd389525837f8f76ee0ed90afcc73be4e5819727d432ba"
+                    "x-api-key": "um_2244ae294ad5d4d67e498b5deeb35657c9ccddd9bb466c9c"
                 },
                 "users": [
                     "u-0",
@@ -137,7 +152,7 @@
             {
                 "headers": {
                     "content-type": "application/json",
-                    "x-api-key": "um_ac9691854075714f63c9f4167cf9a2d17ff250f966d1e039"
+                    "x-api-key": "um_85b2b8045cb8f4c5deb29c4e960734795423f83a081fe3db"
                 },
                 "users": [
                     "u-0",
@@ -150,7 +165,7 @@
             {
                 "headers": {
                     "content-type": "application/json",
-                    "x-api-key": "um_a6a60ab538678d6f24fdd119b047a40d4aef4724c5ba782d"
+                    "x-api-key": "um_5c21f5c81f08345535039e7dc17f587c5e45159d52edb446"
                 },
                 "users": [
                     "u-0",
@@ -163,7 +178,33 @@
             {
                 "headers": {
                     "content-type": "application/json",
-                    "x-api-key": "um_2bc026e21e374906f52387ab91be789b203a8d0b0193cce4"
+                    "x-api-key": "um_c53846b4e852a12b3e8c529c482affd4fc0225d847cf7b61"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ],
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_64c405301883e86f3721689103dedc7a3af065c4776fcf7b"
+                }
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_7689aadb40be8c3c4191cc9ccf90c63a070c7d4317d3e307"
                 },
                 "users": [
                     "u-0",
@@ -176,7 +217,33 @@
             {
                 "headers": {
                     "content-type": "application/json",
-                    "x-api-key": "um_9d988ed95a5e0bbf67ff612fd25d468a2c4e5280ba7526d2"
+                    "x-api-key": "um_7a90002ff1567b1883ff108f489aa57161642a909ff7c5aa"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ],
+                "headers": {
+                    "x-api-key": "um_945951f4e1efebb338f51de9099a6d58b4b2c6adb1d25c82",
+                    "content-type": "application/json"
+                }
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_ae20cb5fde03600d3418e32848948d9842d77569894dc38e"
                 },
                 "users": [
                     "u-0",
@@ -188,7 +255,124 @@
             },
             {
                 "headers": {
-                    "x-api-key": "um_946181ac088ee9636cb23988492ac4c69869f1b109cd113c",
+                    "content-type": "application/json",
+                    "x-api-key": "um_b039bd88397a30ac976fdb8689fa735b780a799aacc16adb"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_1f15c56f169eb222f35bac3b9c29971c74ce1715752930a4"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_2c7eec34f76639c19844fdfbffbd41c4a94150672195d7f1"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_0a302bb7001f4efb09a186b448739d3669d15014372d5913"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_1ed8aab682a79b93cc6d8d4af2820bcdb0f0cb071f659715"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ],
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_29d38da831600b9376419270f7ce3efc9c89d3d2450c05c7"
+                }
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_4caf9cf8425781d26a2ab2b677c4bd3324c92991d4dbd1ec"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_ca7f5058635a3ebf94a88504f4667a461b30a0729c78a921"
+                },
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ]
+            },
+            {
+                "users": [
+                    "u-0",
+                    "u-1",
+                    "u-2",
+                    "u-3",
+                    "u-4"
+                ],
+                "headers": {
+                    "content-type": "application/json",
+                    "x-api-key": "um_a165250d12cdffd30e51134ab48b646effaf6dfe4bf7d5b8"
+                }
+            },
+            {
+                "headers": {
+                    "x-api-key": "um_9f366bacee362d46d7f49d443a8bb5ee3a75a911ddb96885",
                     "content-type": "application/json"
                 },
                 "users": [
@@ -202,176 +386,7 @@
             {
                 "headers": {
                     "content-type": "application/json",
-                    "x-api-key": "um_0336bc83cd0d4ad0c406e6f936efa5da5ebddb2d3710e121"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_808040d40dc1a989bf954b7642a01248330810ff5a8b7072"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_c6d61b2263772636584f3c0ef7cf5a6b320e4d096484944a"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_26fcc6cca012c2f741795f67525095e79fa6f2e4ce15ad0b"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_521982fcf2be2839f49e37f2f34aa55771293440f8b6b02d"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_89e1a87844a105301bc0062dbc541f7e2f81e1e5a56425f9"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_91c640b0699261d3ebe2c4abfbed5dd2a8be47e139b599eb"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ],
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_a359c2d0ca19f0335ad0b91a60a8f8f8f0393cb449447d86"
-                }
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_041c80da94acc1581422e6ed0e11fe24e4c421feb98a36fc"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_64c9ffb2b27a4672592a85bc19e5afc50ae236a49bf96220"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_ef988b43e17f07f49ae3698ac3db5fb8ff470804758d1b42"
-                },
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ]
-            },
-            {
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ],
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_e79e5eb47f04900aa54804b4eb95ffcda769815631858b68"
-                }
-            },
-            {
-                "users": [
-                    "u-0",
-                    "u-1",
-                    "u-2",
-                    "u-3",
-                    "u-4"
-                ],
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_622acfd36dac50cfbd554785afe24826d526cbe3ed1e3e15"
-                }
-            },
-            {
-                "headers": {
-                    "content-type": "application/json",
-                    "x-api-key": "um_bc5e8c2f7ece5a0fdf1cb390f9d5b6a4c38624a19677f79a"
+                    "x-api-key": "um_1992efbf631138a82744f0e0fe9a3b93ff12efd80dda1abc"
                 },
                 "users": [
                     "u-0",
@@ -382,20 +397,5 @@
                 ]
             }
         ]
-    },
-    "root_group": {
-        "groups": {},
-        "checks": {
-                "status is 200 or 422": {
-                    "path": "::status is 200 or 422",
-                    "id": "c2b72604d9c2e01f688d8eb39d7d1dfe",
-                    "passes": 5744,
-                    "fails": 0,
-                    "name": "status is 200 or 422"
-                }
-            },
-        "name": "",
-        "path": "",
-        "id": "d41d8cd98f00b204e9800998ecf8427e"
     }
 }
