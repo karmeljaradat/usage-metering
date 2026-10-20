@@ -27,6 +27,8 @@ What the demo shows (read the output top to bottom):
 
 For clean demo output (no service logs): `LOG=off docker compose up --build` (PowerShell: `$env:LOG="off"; docker compose up --build`)
 
+If port 5432 is already in use on your machine, stop the other Postgres or change the host port in `docker-compose.yml` (`"5433:5432"`; then use `localhost:5433` in `service/.env` for the tests).
+
 ## Tests
 
 Needs the database running:
